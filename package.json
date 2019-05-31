@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/janiello/Bamazon/issues"
   },
-  "homepage": "https://github.com/janiello/Bamazon#readme"
+  "homepage": "https://github.com/janiello/Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^6.3.1"
+  }
 }
