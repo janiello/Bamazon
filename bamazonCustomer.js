@@ -21,7 +21,7 @@ displayItems = function() {
     console.log("Loading items...");
     connection.query("select * from products", function(error, response) {
         if(error) throw error;
-        var data = [["ID", "Product Name", "Department Name", "Price", "# In Stock"]];
+        var data = [["ID", "Product Name", "Department Name", "Price(USD)", "# In Stock"]];
         var output;
         for (var i = 0; i < response.length; i++) {
             var product = [response[i].item_id.toString(), response[i].product_name.toString(), response[i].department_name.toString(), response[i].price.toString(), response[i].stock_quantity.toString()];
