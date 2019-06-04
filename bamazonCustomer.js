@@ -53,6 +53,7 @@ shop = function() {
     });
 };
 
+// Second inquirer function that asks the user how many of the product they want.
 howMany = function() {
     var chooseQty = {
         name: "amount",
