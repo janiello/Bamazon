@@ -17,6 +17,7 @@ connection.connect(function(error) {
     displayItems();
 });
 
+// Function that displays all items in the database upon running the file in node.
 displayItems = function() {
     console.log("Loading items...");
     connection.query("select * from products", function(error, response) {
@@ -30,5 +31,33 @@ displayItems = function() {
         output = table(data);
         console.log(output + "\n");
         connection.end();
+        shop();
+    });
+};
+
+// Inquirer function that asks the user to enter which item they want and how many.
+shop = function() {
+    var chooseId = {
+        name: "choose",
+        type: "input",
+        message: "Enter the ID number of the product you would like to purchase: "
+    };
+    inquirer.prompt(chooseId).then(want => {
+        var want = want.choose;
+        // Print the product_name based on the item_id that was entered...
+        console.log(want);
+        howMany();
+    });
+};
+
+howMany = function() {
+    var chooseQty = {
+        name: "amount",
+        type: "input",
+        message: "Enter the quantity you would like to purchase: "
+    };
+    inquirer.prompt(chooseQty).then(thisMany => {
+        var thisMany = thisMany.amount;
+        console.log(thisMany);
     });
 };
