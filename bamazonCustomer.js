@@ -31,6 +31,7 @@ displayItems = function() {
         output = table(data);
         console.log(output + "\n");
         connection.end();
+        // Calling the shop function here runs the display, THEN asks the user which product they want.
         shop();
     });
 };
@@ -46,7 +47,9 @@ shop = function() {
         var want = want.choose;
         // Print the product_name based on the item_id that was entered...
         console.log(want);
+        // Calling the howMany function here allows the user to enter the product they want first, then asking how much of that product they want.
         howMany();
+        // Calling both shop and howMany individually would bring up both prompts simultaneously and interfere with the displayItems table.
     });
 };
 
