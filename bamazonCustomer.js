@@ -30,7 +30,6 @@ displayItems = function() {
         };
         output = table(data);
         console.log(output + "\n");
-        connection.end();
         // Calling the shop function here runs the display, THEN asks the user which product they want.
         shop();
     });
