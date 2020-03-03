@@ -4,9 +4,9 @@ var inquirer = require("inquirer");
 var {table} = require("table");
 var connection = mysql.createConnection({
     host: "localhost",
-    port: 3307,
+    port: 3306,
     user: "root",
-    password: "root",
+    password: "RCJh2014!",
     database: "bamazon"
 });
 
@@ -18,7 +18,7 @@ connection.connect(function(error) {
 });
 
 // Function that displays all items in the database upon running the file in node.
-displayItems = function() {
+function displayItems() {
     console.log("Loading items...");
     connection.query("select * from products", function(error, response) {
         if(error) throw error;
@@ -30,37 +30,52 @@ displayItems = function() {
         };
         output = table(data);
         console.log(output + "\n");
-        // Calling the shop function here runs the display, THEN asks the user which product they want.
-        shop();
+        inquirer.prompt({
+            name: "shop",
+            type: "list",
+            message: "Would you like to buy something?",
+            choices: ["Yes", "No"]
+        }).then(function(answer) {
+            if (answer.shop === "Yes") {
+                shop();
+            } else {
+                connection.end();
+            }
+        });
     });
 };
 
 // Inquirer function that asks the user to enter which item they want and how many.
-shop = function() {
-    var chooseId = {
-        name: "choose",
-        type: "input",
-        message: "Enter the ID number of the product you would like to purchase: "
-    };
-    inquirer.prompt(chooseId).then(want => {
-        var want = want.choose;
-        // Print the product_name based on the item_id that was entered...
-        console.log("You've chosen product " + want + ".");
-        // Calling the howMany function here allows the user to enter the product they want first, then asking how much of that product they want.
-        howMany();
-        // Calling both shop and howMany individually would bring up both prompts simultaneously and interfere with the displayItems table.
-    });
-};
-
-// Second inquirer function that asks the user how many of the product they want.
-howMany = function() {
-    var chooseQty = {
-        name: "amount",
-        type: "input",
-        message: "Enter the quantity you would like to purchase: "
-    };
-    inquirer.prompt(chooseQty).then(thisMany => {
-        var thisMany = thisMany.amount;
-        console.log("You've requested " + thisMany + " of the chosen product above.");
+function shop() {
+    connection.query("select * from products", function(err, result) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "choose",
+                type: "list",
+                choices: function() {
+                    var productArray = [];
+                    for (var i = 0; i < result.length; i++) {
+                        productArray.push(result[i].product_name)
+                    }
+                    return productArray;
+                },
+                message: "Which product you would like to purchase?"
+            },
+            {
+                name: "amount",
+                type: "input",
+                message: "Enter the quantity you would like to purchase: "
+            }
+        ]).then(function(choice) {
+            var productChoice;
+            for (var c = 0; c < result.length; c++) {
+                if (result[c].product_name === choice.choose) {
+                    productChoice = result[c];
+                }
+            };
+            console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
+        });
+        // console.log("You've chosen " + choose + ".");
     });
 };
