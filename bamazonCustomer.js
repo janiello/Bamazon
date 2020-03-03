@@ -74,7 +74,29 @@ function shop() {
                     productChoice = result[c];
                 }
             };
-            console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
+            if (parseInt(choice.amount) <= productChoice.stock_quantity) {
+                connection.query(
+                    "update products set ? where ?",
+                    [
+                        {
+                            stock_quantity: stock_quantity - choice.amount
+                        },
+                        {
+                            item_id: choice.item_id
+                        },
+                        function(error) {
+                            if (error) throw error;
+                            console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
+                            displayItems();
+                        }
+                    ]
+                )
+            } else {
+                console.log("There are only " + productChoice.stock_quantity + " of those available. Please try again.");
+                displayItems();
+            }
+            // console.log(productChoice);
+            // console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
         });
         // console.log("You've chosen " + choose + ".");
     });
