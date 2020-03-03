@@ -20,7 +20,7 @@ connection.connect(function(error) {
 // Function that displays all items in the database upon running the file in node.
 function displayItems() {
     console.log("Loading items...");
-    connection.query("select * from products", function(error, response) {
+    connection.query("SELECT * FROM products", function(error, response) {
         if(error) throw error;
         var data = [["ID", "Product Name", "Department Name", "Price(USD)", "# In Stock"]];
         var output;
@@ -47,7 +47,7 @@ function displayItems() {
 
 // Inquirer function that asks the user to enter which item they want and how many.
 function shop() {
-    connection.query("select * from products", function(err, result) {
+    connection.query("SELECT * FROM products", function(err, result) {
         if (err) throw err;
         inquirer.prompt([
             {
@@ -76,20 +76,20 @@ function shop() {
             };
             if (parseInt(choice.amount) <= productChoice.stock_quantity) {
                 connection.query(
-                    "update products set ? where ?",
+                    "UPDATE products SET ? WHERE ?",
                     [
                         {
-                            stock_quantity: stock_quantity - choice.amount
+                            stock_quantity: productChoice.stock_quantity - choice.amount
                         },
                         {
                             item_id: choice.item_id
                         },
-                        function(error) {
-                            if (error) throw error;
-                            console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
-                            displayItems();
-                        }
-                    ]
+                    ],
+                    function(error) {
+                        if (error) throw error;
+                        console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
+                        displayItems();
+                    }
                 )
             } else {
                 console.log("There are only " + productChoice.stock_quantity + " of those available. Please try again.");
