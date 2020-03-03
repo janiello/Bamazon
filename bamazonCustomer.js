@@ -65,7 +65,13 @@ function shop() {
             {
                 name: "amount",
                 type: "input",
-                message: "Enter the quantity you would like to purchase: "
+                message: "Enter the quantity you would like to purchase: ",
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                }
             }
         ]).then(function(choice) {
             var productChoice;
@@ -90,7 +96,7 @@ function shop() {
                         console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
                         displayItems();
                     }
-                )
+                );
             } else {
                 console.log("There are only " + productChoice.stock_quantity + " of those available. Please try again.");
                 displayItems();
