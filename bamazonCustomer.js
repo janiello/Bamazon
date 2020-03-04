@@ -63,6 +63,7 @@ function shop() {
                 message: "Which product you would like to purchase?"*/
                 type: "input",
                 message: "Enter the item ID of the product you would like to purchase: ",
+                // Validating here forces the user to enter a number and won't take any other input
                 validate: function(entry) {
                     if (isNaN(entry) === false) {
                         return true;
@@ -81,14 +82,21 @@ function shop() {
                     return false;
                 }
             }
+        // After the answers are stored, I need to access them with a .then() function in order to do anything
         ]).then(function(choice) {
+            // Define a placeholder variable for the first inquirer prompt answer
             var productChoice;
+            // Loop through the results from the beginning of the shop() function
             for (var c = 0; c < result.length; c++) {
+                // If any of the results in the loop match the ID the user entered, then assign that to the variable above
                 if (result[c].item_id === parseInt(choice.choose)) {
                     productChoice = result[c];
                 }
             };
+            // For the second inquirer prompt answer
+            // If the user enters an amount less than what is in stock
             if (parseInt(choice.amount) <= productChoice.stock_quantity) {
+                // Update the item's stock quantity in the database by subtracting the amount the user entered wherever the item_id matches the user input from the productChoice variable above
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
@@ -99,6 +107,7 @@ function shop() {
                             item_id: productChoice.item_id
                         },
                     ],
+                    // Notify the user what they chose, how many of that item they chose, and what their total cost is based on the price in the database and how many items they wanted
                     function(error) {
                         if (error) throw error;
                         console.log(
@@ -112,6 +121,7 @@ function shop() {
                         connection.end();
                     }
                 );
+            // Otherwise, if the user enters a quantity that is more than what is in stock, they must start the program over again, enter a valid quantity, and the database is not altered
             } else {
                 console.log("There are only " + productChoice.stock_quantity + " of those available. Please try again.");
                 displayItems();
