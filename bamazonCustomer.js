@@ -52,7 +52,7 @@ function shop() {
         inquirer.prompt([
             {
                 name: "choose",
-                type: "list",
+                /*type: "list",
                 choices: function() {
                     var productArray = [];
                     for (var i = 0; i < result.length; i++) {
@@ -60,7 +60,15 @@ function shop() {
                     }
                     return productArray;
                 },
-                message: "Which product you would like to purchase?"
+                message: "Which product you would like to purchase?"*/
+                type: "input",
+                message: "Enter the item ID of the product you would like to purchase: ",
+                validate: function(entry) {
+                    if (isNaN(entry) === false) {
+                        return true;
+                    }
+                    return false;
+                }
             },
             {
                 name: "amount",
@@ -76,7 +84,7 @@ function shop() {
         ]).then(function(choice) {
             var productChoice;
             for (var c = 0; c < result.length; c++) {
-                if (result[c].product_name === choice.choose) {
+                if (result[c].item_id === parseInt(choice.choose)) {
                     productChoice = result[c];
                 }
             };
@@ -93,8 +101,15 @@ function shop() {
                     ],
                     function(error) {
                         if (error) throw error;
-                        console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
-                        displayItems();
+                        console.log(
+                            "You've chosen " + 
+                            choice.amount + 
+                            " " + 
+                            productChoice.product_name + 
+                            ".\nYour total is: $" +
+                            productChoice.price * choice.amount
+                        );
+                        connection.end();
                     }
                 );
             } else {
