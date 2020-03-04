@@ -88,7 +88,7 @@ function shop() {
                             stock_quantity: productChoice.stock_quantity - choice.amount
                         },
                         {
-                            item_id: choice.item_id
+                            item_id: productChoice.item_id
                         },
                     ],
                     function(error) {
