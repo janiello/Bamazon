@@ -126,9 +126,6 @@ function shop() {
                 console.log("There are only " + productChoice.stock_quantity + " of those available. Please try again.");
                 displayItems();
             }
-            // console.log(productChoice);
-            // console.log("You've chosen " + choice.amount + " " + productChoice.product_name + ".");
         });
-        // console.log("You've chosen " + choose + ".");
     });
 };
