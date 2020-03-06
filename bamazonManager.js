@@ -60,8 +60,19 @@ function viewAll() {
 };
 
 function viewLow() {
-    console.log("We need more cowbell!");
-    mainMenu();
+    console.log("These items are going fast. You should restock them soon.");
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(error, response) {
+            if (error) throw error;
+            var data = [["ID", "Product Name", "Department Name", "Price (USD)", "# In Stock"]];
+            var output;
+            for (var i = 0; i < response.length; i++) {
+                var product = [response[i].item_id.toString(), response[i].product_name.toString(), response[i].department_name.toString(), response[i].price.toString(), response[i].stock_quantity.toString()];
+                data.push(product);
+            };
+            output = table(data);
+            console.log(output + "\n");
+            mainMenu();
+    });
 };
 
 function restock() {
