@@ -42,7 +42,7 @@ function mainMenu() {
     });
 }
 
-// Functions for testing, will add appropriate code once the menu is working
+// Function that displays all inventory in the database for the user
 function viewAll() {
     console.log("Loading inventory... Done.");
     connection.query("SELECT * FROM products", function(error, response) {
@@ -59,27 +59,85 @@ function viewAll() {
     });
 };
 
+// Function that pulls and displays all inventory below a certain amount so the user can see what needs restocking
 function viewLow() {
     console.log("These items are going fast. You should restock them soon.");
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(error, response) {
-            if (error) throw error;
-            var data = [["ID", "Product Name", "Department Name", "Price (USD)", "# In Stock"]];
-            var output;
-            for (var i = 0; i < response.length; i++) {
-                var product = [response[i].item_id.toString(), response[i].product_name.toString(), response[i].department_name.toString(), response[i].price.toString(), response[i].stock_quantity.toString()];
-                data.push(product);
-            };
-            output = table(data);
-            console.log(output + "\n");
-            mainMenu();
+        if (error) throw error;
+        var data = [["ID", "Product Name", "Department Name", "Price (USD)", "# In Stock"]];
+        var output;
+        for (var i = 0; i < response.length; i++) {
+            var product = [response[i].item_id.toString(), response[i].product_name.toString(), response[i].department_name.toString(), response[i].price.toString(), response[i].stock_quantity.toString()];
+            data.push(product);
+        };
+        output = table(data);
+        console.log(output + "\n");
+        mainMenu();
     });
 };
 
+// Function that allows the user to add inventory to any item in the database
 function restock() {
-    console.log("Fully loaded.");
-    mainMenu();
+    connection.query("SELECT * FROM products", function(error, response) {
+        if (error) throw error;
+        // Prompt the user to choose an item from the database to restock
+        inquirer.prompt([
+            {
+                name: "item",
+                type: "list",
+                choices: function() {
+                    var itemArray = [];
+                    for (var i = 0; i < response.length; i++) {
+                        itemArray.push(response[i].product_name);
+                    }
+                    return itemArray;
+                },
+                message: "Which product would you like to restock?"
+            },
+            // Then prompt the user to enter the amount of the item they would like to add to the database
+            {
+                name: "stock",
+                type: "input",
+                message: "How many units would you like to add?",
+                validate: function(entry) {
+                    if (isNaN(entry) === false) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        ]).then(function(answer) {
+            // Here we are essentially performing the same function as the customer.js prompt to choose a product and amount, but performing the opposite operations to add inventory instead of deplete it.
+            var productChoice;
+            for (var p = 0; p < response.length; p++) {
+                if (response[p].product_name === answer.item) {
+                    productChoice = response[p];
+                }
+            };
+            var stockAmount = parseInt(answer.stock);
+            // Since the user can add any amount of the product they want, we won't need to check it against how many of the item is already in the database. So...
+            connection.query(
+                "UPDATE products SET ? WHERE ?",
+                [
+                    {
+                        stock_quantity: productChoice.stock_quantity + stockAmount
+                    },
+                    {
+                        product_name: productChoice.product_name
+                    }
+                ],
+                function(error) {
+                    if (error) throw error;
+                    console.log("Inventory has been successfully replenished!");
+                    mainMenu();
+                    // I tried to display the new database info for the restocked item, but the table query from above applied to one item didn't work. Will look into later.
+                }
+            );
+        });
+    });
 };
 
+// Function that allows the user to add new data rows
 function addProduct() {
     console.log("NEW! FANCY! BUY IT! GIMME YOUR MONEY!");
     mainMenu();
