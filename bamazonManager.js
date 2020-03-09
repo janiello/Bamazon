@@ -137,8 +137,49 @@ function restock() {
     });
 };
 
-// Function that allows the user to add new data rows
+// Function that allows the user to add new data rows by first prompting the user to enter information for each category in the database
 function addProduct() {
-    console.log("NEW! FANCY! BUY IT! GIMME YOUR MONEY!");
-    mainMenu();
+    inquirer.prompt([
+        {
+            name: "newProduct",
+            type: "input",
+            message: "What is the name of the product you would like to add?"
+        },
+        {
+            name: "newDepartment",
+            type: "list",
+            choices: ["Electronics", "Games", "Appliances", "Home and Kitchen", "Sports and Fitness", "Other"],
+            message: "What department will this product be in?"
+        },
+        {
+            name: "newPrice",
+            type: "input",
+            message: "Please enter the cost of the new product.",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        },
+        {
+            name: "stockQuantity",
+            type: "input",
+            message: "Please enter how many you would like to add to the inventory.",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        }
+    // Storing the answers in a .then() function
+    ]).then(function(entry) {
+        // Console logging responses for testing purposes to make sure the prompts work
+        console.log(entry.newProduct);
+        console.log(entry.newDepartment);
+        console.log(entry.newPrice);
+        console.log(entry.stockQuantity);
+        mainMenu();
+    });
 };
