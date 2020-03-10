@@ -175,11 +175,29 @@ function addProduct() {
         }
     // Storing the answers in a .then() function
     ]).then(function(entry) {
-        // Console logging responses for testing purposes to make sure the prompts work
-        console.log(entry.newProduct);
-        console.log(entry.newDepartment);
-        console.log(entry.newPrice);
-        console.log(entry.stockQuantity);
-        mainMenu();
+        // To access and use the numerical value of any entry for mathematical purposes, we need to parse it and assign it to a variable
+        var newPrice = parseInt(entry.newPrice);
+        var newAmount = parseInt(entry.stockQuantity);
+        connection.query(
+            "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
+            [
+                entry.newProduct, entry.newDepartment, newPrice, newAmount
+            ],
+            function(error) {
+                if (error) throw error;
+                // Console logging responses so the user can see what they entered before needing to call the database
+                console.log(
+                    "Successfully added new product!\nNew Product Name: " +
+                    entry.newProduct +
+                    "\nNew Product Department: " +
+                    entry.newDepartment +
+                    "\nNew Product Price: $" +
+                    newPrice +
+                    "\nNew Product Availability: " +
+                    newAmount
+                );
+                mainMenu();
+            }
+        );
     });
 };
