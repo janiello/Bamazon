@@ -179,6 +179,7 @@ function addProduct() {
         var newPrice = parseInt(entry.newPrice);
         var newAmount = parseInt(entry.stockQuantity);
         connection.query(
+            // For an insert query, '?' placeholders can only be used for the values. There will be an error if placeholders are used for the field names.
             "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
             [
                 entry.newProduct, entry.newDepartment, newPrice, newAmount
