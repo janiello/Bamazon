@@ -118,6 +118,7 @@ function shop() {
                             ".\nYour total is: $" +
                             productChoice.price * choice.amount
                         );
+                        discontinue();
                         connection.end();
                     }
                 );
@@ -128,4 +129,13 @@ function shop() {
             }
         });
     });
+};
+
+function discontinue() {
+    connection.query(
+        "DELETE FROM products WHERE stock_quantity = 0",
+        function(error) {
+            if (error) throw error;
+        }
+    );
 };
