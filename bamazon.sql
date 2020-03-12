@@ -3,6 +3,31 @@ create database bamazon;
 
 use bamazon;
 
+create table departments (
+	department_id integer(10) auto_increment not null,
+    department_name varchar(100) null,
+    overhead_costs integer(10),
+    primary key (department_id)
+);
+
+insert into departments (department_name, overhead_costs)
+values ("Electronics", 100000);
+
+insert into departments (department_name, overhead_costs)
+values ("Games", 15000);
+
+insert into departments (department_name, overhead_costs)
+values ("Appliances", 100000);
+
+insert into departments (department_name, overhead_costs)
+values ("Home and Kitchen", 75000);
+
+insert into departments (department_name, overhead_costs)
+values ("Sports and Fitness", 50000);
+
+insert into departments (department_name, overhead_costs)
+values ("Phones and Accessories", 25000);
+
 create table products (
 	item_id integer(10) auto_increment not null,
     product_name varchar(100) null,
